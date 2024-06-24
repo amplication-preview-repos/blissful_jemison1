@@ -1,0 +1,85 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model DataRequest {
+  company          Company?                      @relation(fields: [companyId], references: [id])
+  companyId        String?
+  companyRelation  String?
+  createdAt        DateTime                      @default(now())
+  id               String                        @id @default(cuid())
+  requestCreatedAt DateTime?
+  requestStatus    EnumDataRequestRequestStatus?
+  status           EnumDataRequestStatus?
+  updatedAt        DateTime                      @updatedAt
+  user             User?                         @relation(fields: [userId], references: [id])
+  userId           String?
+  userRelation     String?
+}
+
+model Company {
+  address          String?
+  createdAt        DateTime          @default(now())
+  dataRequests     DataRequest[]
+  dataRequestUsers DataRequestUser[]
+  email            String?
+  id               String            @id @default(cuid())
+  name             String?
+  updatedAt        DateTime          @updatedAt
+}
+
+model DataField {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt    DateTime      @default(now())
+  dataRequests DataRequest[]
+  email        String?       @unique
+  firstName    String?
+  id           String        @id @default(cuid())
+  lastName     String?
+  password     String
+  phoneNumber  String?
+  resetToken   String?
+  updatedAt    DateTime      @updatedAt
+  username     String        @unique
+}
+
+model DataRequestUser {
+  company          Company[]
+  companyLookup    String?
+  companyRelation  String?
+  createdAt        DateTime                            @default(now())
+  createdDateTime  DateTime?
+  id               String                              @id @default(cuid())
+  requestCreatedAt DateTime?
+  requestStatus    EnumDataRequestUserRequestStatus?
+  statusOptionSet  EnumDataRequestUserStatusOptionSet?
+  updatedAt        DateTime                            @updatedAt
+  userLookup       String?
+  userRelation     String?
+}
+
+enum EnumDataRequestRequestStatus {
+  Option1
+}
+
+enum EnumDataRequestStatus {
+  Option1
+}
+
+enum EnumDataRequestUserRequestStatus {
+  Option1
+}
+
+enum EnumDataRequestUserStatusOptionSet {
+  Option1
+}
